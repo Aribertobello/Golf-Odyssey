@@ -97,7 +97,7 @@ public class GolfGameTest {
             public void handle(long now) {
                 level.ball.getBall().setLayoutX(level.ball.getBall().getLayoutX() + level.ball.getVelocityX());
                 level.ball.getBall().setLayoutY(level.ball.getBall().getLayoutY() + level.ball.getVelocityY());
-
+  for (Wall wall : level.walls){
                 if (level.ball.getBall().getBoundsInParent().intersects(level.walls.get(1).line.getBoundsInParent())) {
                     level.ball.setVelocityY(-level.ball.getVelocityY());
                  
@@ -123,7 +123,7 @@ public class GolfGameTest {
                          level.walls.get(1).line.setEndY(0);
                     }
                 }
-
+  }
                 if (level.ball.getBall().getLayoutY() <= level.goalLine.line.getStartY() + level.ball.getRadius() && level.ball.getVelocityY() < 0) {
                     System.out.println("Goal!");
                      
@@ -147,7 +147,7 @@ public class GolfGameTest {
                 level.ball.setVelocityY (level.ball.getVelocityY()*speedFactor);
                 
                 velocity.setText(String.valueOf(level.ball.speed()));
-                root.getChildren().setAll(level.ball.getBall(), level.goalLine.line,trajectoryLine,hbox);
+              //  root.getChildren().setAll(level.ball.getBall(), level.goalLine.line,trajectoryLine,hbox);
                 
                 /*for (int i = 1; i < level.walls.size(); i++) {
                     root.getChildren().setAll(level.walls.get(i).line);
