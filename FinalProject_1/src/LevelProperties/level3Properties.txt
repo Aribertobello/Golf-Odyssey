@@ -1,0 +1,13 @@
+Level 3
+index 3 
+Now Onto Level 3
+Some say it is impossible
+I say it is
+With enough power anything is possible
+Reach The Green Finish Line
+Don't hit The red walls
+
+ball 1.0 10.0 300.0 400.0
+
+finish line 0.0 50.0 600.0 50.0
+wall 0.0 300.0 600.0 300.0
