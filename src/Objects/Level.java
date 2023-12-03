@@ -1,0 +1,33 @@
+package Objects;
+
+import java.util.ArrayList;
+
+public class Level {
+    public Ball ball;
+    public Wall goalLine;
+    public ArrayList<Wall> walls = new ArrayList<>();
+    public ArrayList<Trap> traps = new ArrayList<>();
+    public String name;
+    public String description;
+    public int index;
+    public String filePath;
+    public double timeLimit;
+    public int maxAttempts;
+
+    public Level(String name, String description, double timeLimit, int maxAttempts, Ball ball, Wall goalLine, Wall... walls) {
+        this.name = name;
+        this.description = description;
+        this.timeLimit = timeLimit;  
+        this.maxAttempts = maxAttempts;
+        this.ball = ball;
+        this.goalLine = goalLine;
+        this.walls.add(goalLine);
+        for (Wall wall : walls) {
+            this.walls.add(wall);
+        }
+}
+    
+    public void addTrap(Trap trap) {
+    this.traps.add(trap);
+   }
+}
