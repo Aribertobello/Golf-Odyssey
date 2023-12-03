@@ -4,6 +4,7 @@ package Objects;
 import java.util.ArrayList;
 import java.util.Vector;
 import javafx.scene.paint.Color;
+import javafx.scene.control.ColorPicker;
 import javafx.scene.shape.Circle;
 
 /*
@@ -19,6 +20,7 @@ public class Ball extends Body{
     
     double radius;
     Circle ball;
+    private ColorPicker colorPicker;
 
     
     public Ball(double mass, double radius, Double positionX, Double positionY) {
@@ -29,10 +31,23 @@ public class Ball extends Body{
         position = new ArrayList<>();
         position.add(positionX);
         position.add(positionY);
-        ball = new Circle(radius,Color.WHEAT);
+        colorPicker = new ColorPicker(Color.WHEAT);
+        colorPicker.setOnAction(event -> setBallColor(colorPicker.getValue()));
+        ball = new Circle(radius, colorPicker.getValue());
         ball.setStroke(Color.BLACK);
         ball.relocate(positionX,positionY); 
     }
+    
+    public ColorPicker getColorPicker() {
+        return colorPicker;
+    }
+
+    
+
+    public void setBallColor(Color ballColor) {
+        this.ball.setFill(ballColor);
+    }
+    
     //getters setters
 
     public double getRadius() {
