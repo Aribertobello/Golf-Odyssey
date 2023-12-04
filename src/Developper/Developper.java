@@ -93,8 +93,6 @@ public class Developper extends Application {
         VBox trapBox = new VBox(trapLabel);
         trapBox.setStyle("-fx-border-color: #000000");
         
-        
-        
         HBox root = new HBox(20,ballBox,wallBox,trapBox);
         root.setAlignment(Pos.CENTER);
         return new Scene(root,1800,500);
@@ -132,7 +130,7 @@ public class Developper extends Application {
         addWallButton.setOnAction(event ->
         {
             wallIndex++;
-            testGame.getLevel().walls.add(new Wall(300, 300, 300, 300));
+            testGame.getLevel().walls.add(new Wall(300, 300, 300, 300,false));
             testGame.getRoot().getChildren().add(testGame.getLevel().walls.get(wallIndex).line);
             Label startXlabel = new Label("startX:");
             TextField startXField = new TextField(String.valueOf(testGame.getLevel().walls.get(wallIndex).startX));

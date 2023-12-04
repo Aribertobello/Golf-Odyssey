@@ -25,10 +25,10 @@ public class Test {
     
     
     public static void main(String[] args){
-        Ball ball = new Ball(2, 4, 198.0, 267.0);
-        Wall wall = new Wall(0, 200, 600,  00);
-        ball.setVelocityX(100);
-        ball.setVelocityY(0);
+        Ball ball = new Ball(2, 4, 200.0, 196.0);
+        Wall wall = new Wall(200, 200, 600, 200,false);
+        ball.setVelocityX(0);
+        ball.setVelocityY(-100);
         System.out.println(ball.getVelocityX()+" "+ball.getVelocityY()); 
         System.out.println(PhysicsEngine.vectorNormal(wall.DirectionVector()));
         if(PhysicsEngine.collides(ball, wall)){

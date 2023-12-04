@@ -40,7 +40,7 @@ public class gameLaunch {
         fileMenu.getItems().add(exitItem);
         
         exitItem.setOnAction(event -> {
-        stage.setScene(Application.menuScene(stage));
+        stage.setScene(Application.MainMenuScene(stage));
         });
         
         menuBar.getMenus().addAll(fileMenu);

@@ -2,6 +2,7 @@ package Developper;
 
 import Objects.Ball;
 import Objects.Level;
+import Objects.PowerUp;
 import Objects.Trap;
 import Objects.Wall;
 
@@ -17,7 +18,7 @@ public class FileReader {
         Scanner scanner = new Scanner(file);
 
         String name = scanner.nextLine();
-        int index = Integer.parseInt(scanner.nextLine().substring(6));
+        int index = Integer.parseInt(scanner.nextLine().substring(6,7));
         String description = scanner.nextLine() + "\n" + scanner.nextLine() + "\n" + scanner.nextLine() + "\n" + scanner.nextLine() + "\n" + scanner.nextLine();
         scanner.nextLine();
         scanner.next();
@@ -53,45 +54,62 @@ public class FileReader {
         double finishLineEndY = scanner.nextDouble();
 
         Ball ball = new Ball(ballMass, ballRadius, ballX, ballY);
-        Wall finishLine = new Wall(finishLineStartX, finishLineStartY, finishLineEndX, finishLineEndY);
+        Wall finishLine = new Wall(finishLineStartX, finishLineStartY, finishLineEndX, finishLineEndY,false);
         finishLine.line.setStroke(Color.GREEN);
-        level = new Level(name, description,timeLimit,attempts, ball, finishLine);
+        level = new Level(name, description, timeLimit,attempts,ball, finishLine);
 
-    while (scanner.hasNextLine()) {
-        String line = scanner.nextLine();
-        if (line.startsWith("wall")) {
-            try {
-                String[] wallData = line.split(" ");
-                double wallStartX = Double.parseDouble(wallData[1]);
-                double wallStartY = Double.parseDouble(wallData[2]);
-                double wallEndX = Double.parseDouble(wallData[3]);
-                double wallEndY = Double.parseDouble(wallData[4]);
+while (scanner.hasNextLine()) {
+    String line = scanner.nextLine();
+    if (line.startsWith("wall")) {
+        try {
+            String[] wallData = line.split(" ");
+            double wallStartX = Double.parseDouble(wallData[1]);
+            double wallStartY = Double.parseDouble(wallData[2]);
+            double wallEndX = Double.parseDouble(wallData[3]);
+            double wallEndY = Double.parseDouble(wallData[4]);
+            boolean breakable =  wallData[5].contains("1");
 
-                Wall wall = new Wall(wallStartX, wallStartY, wallEndX, wallEndY);
-                level.walls.add(wall);
-            } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
-                System.out.println("Walls not here");
-                e.printStackTrace(); // Print stack trace for debugging
-            }
-        } else if (line.startsWith("trap")) {
-            try {
-                String[] trapData = line.split(" ");
-                double trapStartX = Double.parseDouble(trapData[1]);
-                double trapStartY = Double.parseDouble(trapData[2]);
-                double trapEndX = Double.parseDouble(trapData[3]);
-                double trapEndY = Double.parseDouble(trapData[4]);
-                double frictionCoefficient = Double.parseDouble(trapData[5]);
-                String trapType = trapData[6];
+            Wall wall = new Wall(wallStartX, wallStartY, wallEndX, wallEndY,breakable);
+            level.walls.add(wall);
+        } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+            System.out.println("Walls not here");
+            e.printStackTrace(); // Print stack trace for debugging
+        }
+    } else if (line.startsWith("trap")) {
+        try {
+            String[] trapData = line.split(" ");
+            double trapStartX = Double.parseDouble(trapData[1]);
+            double trapStartY = Double.parseDouble(trapData[2]);
+            double trapEndX = Double.parseDouble(trapData[3]);
+            double trapEndY = Double.parseDouble(trapData[4]);
+            double frictionCoefficient = Double.parseDouble(trapData[5]);
+            String trapType = trapData[6];
           
-                Trap trap = new Trap(trapStartX, trapStartY, trapEndX, trapEndY,frictionCoefficient,trapType);
-                trap.setFrictionCoefficient(frictionCoefficient);
-                level.addTrap(trap);
-            } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
-                System.out.println("Error: traps not here");
-                e.printStackTrace(); // Print stack trace for debugging
-            }
+            Trap trap = new Trap(trapStartX, trapStartY, trapEndX, trapEndY,frictionCoefficient,trapType);
+            trap.setFrictionCoefficient(frictionCoefficient);
+            level.addTrap(trap);
+        } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+            System.out.println("Error: traps not here");
+            e.printStackTrace(); // Print stack trace for debugging
         }
     }
+    else if (line.startsWith("powers")) {
+        try {
+            String[] trapData = line.split(" ");
+            int numberofSizePw = (int) Double.parseDouble(trapData[1]);
+            int numberofForcePw = (int) Double.parseDouble(trapData[2]);
+            
+            PowerUp powerup= new PowerUp(numberofSizePw,numberofForcePw);
+            level.addPowerUps(powerup);
+            
+        } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+            System.out.println("Error: Powerups not here");
+            e.printStackTrace(); // Print stack trace for debugging
+        }
+    }
+}
+
+
         level.filePath = file.getPath();
         level.index = index;
         return level;

@@ -111,6 +111,7 @@ public class Body {
     public double getVelocityY(){
         return velocity.get(1);
     }
+    
     public double getMomentumX(){
         return velocity.get(1);
     }
@@ -144,12 +145,7 @@ public class Body {
     public void setVelocityY(double velocityY){
         this.velocity.set(1, velocityY);
     }
-    public void setMomentumX(double velocityX){
-        this.velocity.set(0, velocityX);
-    }
-    public void setMomentumY(double velocityY){
-        this.velocity.set(1, velocityY);
-    }
+    
     
     
     public void addForce(double forceX, double forceY){
@@ -161,5 +157,8 @@ public class Body {
     public void addForce(Vector<Double> force){
         forces.add(force);
     }
+    
+        
+
     
 }

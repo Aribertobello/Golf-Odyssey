@@ -30,6 +30,8 @@ public class Trap extends Obstacle {
     
      public void updateVisualization() {
         if (trapType.equalsIgnoreCase("sand")) {
+         //  rectangle.setWidth(rectangle.getWidth() * 0.95); //just to test and see for us
+         //  rectangle.setHeight(rectangle.getHeight() * 0.95);
             rectangle.setFill(Color.YELLOW);
         } else if (trapType.equalsIgnoreCase("ice")) {
             rectangle.setFill(Color.LIGHTBLUE);

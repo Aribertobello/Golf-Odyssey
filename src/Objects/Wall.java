@@ -21,19 +21,30 @@ public class Wall extends Obstacle{
     public double endY;
     public double startY;
     
+    
+ 
     private double Length(){return line.getEndX();}
-    public Wall(double startX, double startY, double endX, double endY) {
+    public Wall(double startX, double startY, double endX, double endY,boolean isBreakable) {
         super();
+        this.isbreakable = isBreakable;
         this.startX = startX;
         this.endX = endX;
         this.endY = endY;
         this.startY = startY;
         this.position.add((endX+startX)/2);
         this.position.add((endY+startY)/2);
-        this.mass = 1000000000;
+        this.mass = 100000000;
         line = new Line(startX,startY,endX,endY);
+        if(isBreakable){
+            line.setStroke(Color.RED);
+        }
     }
-    public void setStartX(double startX) {
+    
+    public boolean isbreakableWall(){
+        return isbreakable;
+    } 
+     
+       public void setStartX(double startX) {
         line.setStartX(startX);
         this.startX = startX;
     }
@@ -49,6 +60,7 @@ public class Wall extends Obstacle{
         line.setStartY(startY);
         this.startY = startY;
     }
+     
     
     public Vector<Double> DirectionVector(){
         Vector<Double> direction = new Vector<Double>();
@@ -64,7 +76,7 @@ public class Wall extends Obstacle{
      * @return array of coefficients of the equation of the line in the form Ax + By = C; 
      */
     @Override
-    public double[] getBounds(){
+     public double[] getBounds(){
         double deltaX = endX-startX;
         double deltaY = endY-startY;
         double slope = deltaY/deltaX;
@@ -75,7 +87,7 @@ public class Wall extends Obstacle{
         bounds[1] = B;
         bounds[2] = B*startY+slope*startX;
         return bounds;
-    }
+    } 
 
       
 }

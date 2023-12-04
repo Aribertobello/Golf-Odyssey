@@ -2,24 +2,28 @@ package BallGame;
 
 import Developper.PhysicsEngine;
 import Objects.Level;
+import Objects.PowerUp;
 import Objects.Trap;
-import Objects.Wall;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+ 
 
 /*
 scale
@@ -33,71 +37,95 @@ public class Game {
     Scene scene;
     BorderPane gameRoot = new BorderPane();
     
-    private static final DecimalFormat df = new DecimalFormat("0.00");
-    public Boolean gameWon = false;
-    public boolean gameEnd = false;
-    boolean attemptLimitReached = false;
-    boolean timeLimitReached = false;
-    private Timeline timeline = null;
-    private int numberOfTries ;
+    private Timeline timeline = timelineBuilder();
     private double time = 0;
+    
+    public boolean gameWon = false;
+    public boolean gameEnd = false;
+    
+    private static final DecimalFormat df = new DecimalFormat("0.00");
+    
+    private Timeline timelineEffectTimer;
+    
+    
     private double dragStartX, dragStartY;
     private boolean dragging = false;
     Line trajectoryLine = new Line();
+    
     private HBox time_AttempsBox = new HBox();
+    private HBox TopPane = new HBox(15);
+    private HBox MenuBox = new HBox();
+    
+    private int Size_PW;
+    private int Force_PW;
+    private long timeElapsed;
+    private long finish;
+    private long start;
+    private boolean  sizeButtonClicked;
+    private long lastClickedTime;
+    
+    private double originalRadius;
+    private double originalMass;
+ 
+    private Circle Size;
+    private Circle Force;
+    VBox PowerUpsBox = new VBox(3);
       
     public Game(Level level) {
         this.level = level;
     }
-
     public Game() {
     }
-
+    
+    public int getNumberOfTries(){
+    return level.attempts;
+    }
+    
     public Level getLevel() {
         return level;
     }
-
+    public BorderPane getRoot(){
+        return gameRoot;
+    }
     public void setLevel(Level level) {
         this.level = level;
     }
 
-    public BorderPane getRoot(){
-        return gameRoot;
-    }
-    
     public void runGame() {
-        numberOfTries = level.maxAttempts;
-        timeline = timelineBuilder();
+       
         trajectoryLine.setStroke(Color.BLACK);
         scene = new Scene(gameRoot, 600, 600);
-     //------------------------ 
-         
-          //timeBox.getChildren().addAll(new Label("Time: "+time), timeLabel);
-         time_AttempsBox.setAlignment(Pos.CENTER); // Align the time label in the center of the HBox
-
-         // Add the time label container (HBox) to the top of the BorderPane
-         if(level.index!=0){gameRoot.setTop(time_AttempsBox);}
-   //------------------
+        
         startMouseDragEvent(scene, trajectoryLine);
         endMouseDragEvent(scene, trajectoryLine);
         createTrajectoryLine(scene, trajectoryLine);
-
+        
+        powerupBuilder();
+        
+        time_AttempsBox.setAlignment(Pos.CENTER);
+        MenuBar menuBar = menuBar();
+        MenuBox.getChildren().setAll(menuBar);
+        TopPane.getChildren().setAll(MenuBox,time_AttempsBox);
+        TopPane.setAlignment(Pos.CENTER);
+        gameRoot.setTop(TopPane);
         gameRoot.getChildren().addAll( level.goalLine.line, trajectoryLine);
         for (int i = 1; i < level.walls.size(); i++) {
             gameRoot.getChildren().add(level.walls.get(i).line);
         }
         
-         for (Trap trap : level.traps) {
-           trap.updateVisualization();
-        gameRoot.getChildren().add(trap.getRectangle());
-}
+        for (Trap trap : level.traps) {
+            trap.updateVisualization();
+            gameRoot.getChildren().add(trap.getRectangle());
+        }
+        
         gameRoot.getChildren().add(level.ball.getBall());
         gameStage.setScene(scene);
         gameStage.setTitle(level.name);
         timeline.play();
+        timelineEffectTimer.play();
         gameStage.showAndWait();
     }
-
+ 
     public void createTrajectoryLine(Scene scene, Line trajectoryLine) {
         scene.setOnMouseDragged(event -> {
             if (dragging) {
@@ -111,21 +139,17 @@ public class Game {
             }
         });
     }
-
+    
     public void startMouseDragEvent(Scene scene, Line trajectoryLine) {
+    
         scene.setOnMousePressed(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
                 dragStartX = event.getSceneX();
                 dragStartY = event.getSceneY();
                 dragging = true;
-             
-                if(numberOfTries!=0){
-                numberOfTries = numberOfTries - 1;
-                }
-                else
-                    numberOfTries=-1;    
+                level.attempts--;  
             }
-        });
+      });
     }
     public void endMouseDragEvent(Scene scene, Line trajectoryLine) {
         scene.setOnMouseReleased(event -> {
@@ -134,22 +158,22 @@ public class Game {
                 trajectoryLine.setStartY(0);
                 trajectoryLine.setEndX(0);
                 trajectoryLine.setEndY(0);
-                double momentumX = (-event.getSceneX() + dragStartX)/level.ball.getMass();
-                double momentumY = (-event.getSceneY() + dragStartY)/level.ball.getMass();
-                level.ball.setVelocityX(momentumX);
-                level.ball.setVelocityY(momentumY);
+                double velocityX = -event.getSceneX() + dragStartX;
+                double velocityY = -event.getSceneY() + dragStartY;
+                level.ball.setVelocityX(velocityX);
+                level.ball.setVelocityY(velocityY);
                 dragging = false;
             }
         });
     }
 
     private Timeline timelineBuilder() {
-        timeline = new Timeline(new KeyFrame(Duration.millis(1), e ->
-            {
+        timeline = new Timeline(new KeyFrame(Duration.millis(1), e
+                -> {
             time = time + 0.001;
-            time_AttempsBox.getChildren().setAll(new Label("Time Left: " + df.format(level.timeLimit - time)+ " s " + " Attempts: " + numberOfTries));
+            time_AttempsBox.getChildren().setAll(new Label("Time Left: " + df.format(level.timelimit - time)+ " s " + " Attempts: " + level.attempts));
            
-            if(level.ball.speed()<10){level.ball.setVelocityX(0);level.ball.setVelocityY(0);level.ball.getForces().clear();}
+            if(level.ball.speed()<5){level.ball.setVelocityX(0);level.ball.setVelocityY(0);level.ball.getForces().clear();}
             
             level.ball.setPositionX(
                     PhysicsEngine.velocityIntegral(
@@ -170,37 +194,51 @@ public class Game {
                     PhysicsEngine.accelerationIntegral(0.001, level.ball.getNetForceY(), level.ball.getMass(), level.ball.getVelocityY()));
             level.ball.getForces().clear();
             level.ball.addForce(PhysicsEngine.Friction(level.ball, 10));
+            
             for (int i = 1; i < level.walls.size(); i++) {
-                if (PhysicsEngine.collides(level.ball, level.walls.get(i))) {
+               
+                if (  level.walls.get(i).isbreakableWall()) {
+                if(PhysicsEngine.collides(level.ball, level.walls.get(i))){
+                
+                    if(level.ball.NetForce()>=95){ //95 is what is needed to break a breakable wall
+               //making the lines just disappear
+               level.walls.get(i).line.setStartX(0); 
+               level.walls.get(i).line.setStartY(0);
+               level.walls.get(i).line.setEndX(0);
+               level.walls.get(i).line.setEndY(0);
+               
+               //Making the wall not being able to collide with the ball if if line are showing
+               level.walls.get(i).endX=0.0;  
+              level.walls.get(i).endY=0.0;
+              level.walls.get(i).startX=0.0;
+              level.walls.get(i).startY=0.0;
+                    }
+                    
+                    else{ PhysicsEngine.collision(level.ball, level.walls.get(i));}
+               
+                 }
+               }
+                
+            else  if (PhysicsEngine.collides(level.ball, level.walls.get(i))) {
                     PhysicsEngine.collision(level.ball, level.walls.get(i));
-                }
+               }
             }
+            
+            for (Trap trap : level.traps) {
+            if (trap.isBallInside(level.ball)) {
+                
+            double frictionCoefficient = trap.getFrictionCoefficient();
+            level.ball.addForce(PhysicsEngine.Friction(level.ball, frictionCoefficient));
+            }
+            }
+            
             if (level.ball.getBall().getLayoutX() <= 0 || level.ball.getBall().getLayoutX() >= scene.getHeight() - level.ball.getRadius()) {
                 level.ball.setVelocityX(-level.ball.getVelocityX());
             }
             if (level.ball.getBall().getLayoutY() <= 0 || level.ball.getBall().getLayoutY() >= scene.getHeight() - level.ball.getRadius()) {
                 level.ball.setVelocityY(-level.ball.getVelocityY());
             }
-            {
-                /*
-                System.out.println("position x :" + level.ball.getPositionX());
-                System.out.println("position y :" + level.ball.getPositionY());
-                System.out.println("velocity x :" + level.ball.getVelocityX());
-                System.out.println("velocity y :" + level.ball.getVelocityY());
-                System.out.println("acceleration x :" + level.ball.getAccelerationX());
-                System.out.println("acceleration y :" + level.ball.getAccelerationY());
-                System.out.println("force x :" + level.ball.getNetForceX());
-                System.out.println("force y :" + level.ball.getNetForceY());
-            */
-            }
-              for (Trap trap : level.traps) {
-            if (trap.isBallInside(level.ball)) {
-                
-            double frictionCoefficient = trap.getFrictionCoefficient();
-            level.ball.addForce(PhysicsEngine.Friction(level.ball, frictionCoefficient)); 
-                System.out.println(level.ball.speed());
-            }
-            }
+            
             if (PhysicsEngine.collides(level.ball, level.goalLine)) {
                 System.out.println("Goal!");
                 timeline.stop();
@@ -208,26 +246,141 @@ public class Game {
                 gameEnd = true;
                 gameStage.close();
             }
-            if (time >= level.timeLimit) {
-                System.out.println("fail");
-                timeline.stop();
-                timeLimitReached = true;
-                gameWon = false;
-                gameEnd = true;
-                gameStage.close();
-            }
-            if (numberOfTries == -1) {
-                attemptLimitReached = true;
+            if (time >= level.timelimit) {
                 System.out.println("fail");
                 timeline.stop();
                 gameWon = false;
                 gameEnd = true;
                 gameStage.close();
             }
+         
+          if (level.attempts == -1) {
+                System.out.println("fail");
+                timeline.stop();
+                gameWon = false;
+                gameEnd = true;
+                gameStage.close();
+            }
+    
         }));
         timeline.setCycleCount(Timeline.INDEFINITE);
         return timeline;
     }
+
+    private MenuBar menuBar() {
+        MenuBar menuBar = new MenuBar();
+        Menu fileMenu = new Menu("Exit");
+        MenuItem exitItem = new MenuItem("Back To Main Menu");
+        MenuItem ballColorChange = new MenuItem("Colors");
+        fileMenu.getItems().addAll(ballColorChange,exitItem);
+        menuBar.getMenus().addAll(fileMenu);
+      
+        exitItem.setOnAction(event -> {
+        gameStage.close();
+        });
+        
+        VBox colorsBox = new VBox();
+        colorsBox.getChildren().addAll(menuBar, level.ball.getBall());
+
+        ballColorChange.setOnAction(event -> {
+            Stage colorSelectionStage = new Stage();
+            VBox colorSelectionLayout = new VBox(10);
+
+            // Creating a ColorPicker for selecting the shared color
+            ColorPicker colorPicker = new ColorPicker(BallCollisionGame.ballColor);
+
+            // Adding ColorPicker to the layout
+            colorSelectionLayout.getChildren().addAll(colorPicker);
+
+            // Event handler to update the shared color when the ColorPicker changes
+            colorPicker.setOnAction(colorEvent -> {
+                BallCollisionGame.ballColor = colorPicker.getValue();
+               level.ball.setBallColor(BallCollisionGame.ballColor); // Apply the shared color to the ball      
+            });
+
+            Scene colorSelectionScene = new Scene(colorSelectionLayout, 200, 200);
+            colorSelectionStage.setTitle("Select Ball Color");
+            colorSelectionStage.setScene(colorSelectionScene);
+            colorSelectionStage.show();
+        });
+        return menuBar;
+    }
     
+    public void powerupBuilder(){
+        originalRadius =  level.ball.getBall().getRadius();
+        originalMass  = level.ball.getMass();
+        Size = new Circle(15);
+        Force = new Circle(15);
+      
+        Size.setStroke(Color.BLUE);
+        Size.setFill(Color.BROWN);
+        Force.setStroke(Color.BLUE);
+        Force.setFill(Color.GREEN);
+      
+      
+        for (PowerUp powerup : level.powerUps) {
+            Size_PW=powerup.getnumberOfSizePowerups();
+            Force_PW=powerup.getnumberOfForcePowerUps();
+        }
+        
+        Size.setOnMousePressed(event->  
+        {
+            level.attempts++;
+            start = System.currentTimeMillis();
+            sizeButtonClicked = true; 
+            lastClickedTime = start;
+            if(Size_PW!=0){
+                System.out.println("CLICKED SIZE BUTTON");
+                level.ball.getBall().setRadius(5.0);
+                Size_PW = Size_PW-1;
+            }
+            if(Size_PW==0){
+                System.out.println("NO MORE");
+            }
+        });
+       
+        Force.setOnMousePressed(event->  {
+            start = System.currentTimeMillis();
+            level.attempts++;
+            sizeButtonClicked = true; 
+            lastClickedTime = start;
+            if(Force_PW!=0){
+                System.out.println("CLICKED SIZE BUTTON");
+                level.ball.setMass(500.0);
+                Force_PW = Force_PW-1;
+            }
+            if(Force_PW==0){
+                System.out.println("NO MORE");
+            }
+        });
+        timelineEffectTimer = new Timeline(new KeyFrame(Duration.millis(100), e-> 
+        {
+            if (sizeButtonClicked) {
+                long currentTime = System.currentTimeMillis();
+                long elapsedTime = currentTime - lastClickedTime;
+                if (elapsedTime >= 5000) { // Check if 5 seconds (5000 milliseconds) have elapsed
+                    level.ball.getBall().setRadius(originalRadius);
+                    level.ball.setMass(originalMass);
+                    sizeButtonClicked = false;  
+                }
+            }
+        }));
+        timelineEffectTimer.setCycleCount(Timeline.INDEFINITE);
+        
+        Label pw_message = new Label("Powers");      
+        pw_message.setStyle("-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #333333; -fx-underline: true;");
+     
+        PowerUpsBox.setAlignment(Pos.CENTER);
+        PowerUpsBox.setStyle("-fx-border-color: black; -fx-border-width: 2px; -fx-border-style: solid; -fx-padding: 2px;");
+     
+        if(Size_PW>0 && Force_PW>0){
+            PowerUpsBox.setMaxWidth(100);
+            PowerUpsBox.setMaxHeight(100);
+      
+            PowerUpsBox.getChildren().setAll(pw_message,Size,Force);
+            gameRoot.setLeft(PowerUpsBox);
+        }
+    }
 
 }
+

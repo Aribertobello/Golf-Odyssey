@@ -16,6 +16,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 /**
@@ -25,6 +26,7 @@ import javafx.stage.Stage;
 public class BallCollisionGame extends Application{
     
     ArrayList<String> levelsProperties;
+    public static Color ballColor = Color.WHEAT;
     
     public static void main(String args[]){launch(args);}
     public void start(Stage primaryStage){

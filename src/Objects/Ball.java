@@ -20,10 +20,11 @@ public class Ball extends Body{
     
     double radius;
     Circle ball;
+    public static Color defaultColor = Color.KHAKI;
     public ColorPicker ballColorPicker;
 
     
-    public Ball(double mass, double radius, Double positionX, Double positionY,Color initialColor) {
+    public Ball(double mass, double radius, Double positionX, Double positionY) {
         
         super(mass);
         this.radius = radius;
@@ -31,18 +32,16 @@ public class Ball extends Body{
         position = new ArrayList<>();
         position.add(positionX);
         position.add(positionY);
-        ballColorPicker = new ColorPicker(initialColor);
+        ballColorPicker = new ColorPicker(defaultColor);
         ballColorPicker.setOnAction(event -> setBallColor(ballColorPicker.getValue()));
-        ball = new Circle(radius, ballColorPicker.getValue());
-        ball.setStroke(Color.BLACK);
+        ball = new Circle(radius, defaultColor);
+        ball.setStroke(defaultColor);
         ball.relocate(positionX,positionY); 
     }
     
     public ColorPicker getBallColorPicker() {
         return ballColorPicker;
     }
-
-    
 
     public void setBallColor(Color ballColor) {
         this.ball.setFill(ballColor);
