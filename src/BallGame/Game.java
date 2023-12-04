@@ -204,7 +204,7 @@ public class Game {
                 if (  level.walls.get(i).isbreakableWall()) {
                 if(PhysicsEngine.collides(level.ball, level.walls.get(i))){
                 
-                    if(level.ball.kE()>=level.walls.get(i).getStrength()){ //95 is what is needed to break a breakable wall
+                    if(level.ball.kE()>=level.walls.get(i).getStrength()){ 
                //making the lines just disappear
                level.walls.get(i).line.setStartX(0); 
                level.walls.get(i).line.setStartY(0);

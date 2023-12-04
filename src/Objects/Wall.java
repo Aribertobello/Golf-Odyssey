@@ -37,7 +37,7 @@ public class Wall extends Obstacle{
         line = new Line(startX,startY,endX,endY);
         if(isBreakable){
             line.setStroke(Color.RED);
-            this.strength = 500;
+            this.strength = 100000;
         }else{
             this.strength = Double.POSITIVE_INFINITY;
         }

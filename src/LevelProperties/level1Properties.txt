@@ -4,11 +4,11 @@ This Is the First level
 So Don't Stress Too Much
 This level is meant To 
 Show you the Fundamentals Of the Game
+mess around and
 Reach The Green Finish Line
-Don't hit The red walls
 
 time Limit 50000
-attempts 5 
+attempts 10 
 
 ball 1.0 10.0 300.0 400.0
 
