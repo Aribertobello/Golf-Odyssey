@@ -1,4 +1,4 @@
-/*
+L/*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
@@ -26,7 +26,7 @@ import javafx.stage.Stage;
 public class BallCollisionGame extends Application{
     
     ArrayList<String> levelsProperties;
-    public static Color ballColor = Color.WHEAT;
+    public static Color ballColor = Color.YELLOW;
     
     public static void main(String args[]){launch(args);}
     public void start(Stage primaryStage){
