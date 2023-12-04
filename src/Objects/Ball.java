@@ -20,7 +20,7 @@ public class Ball extends Body{
     
     double radius;
     Circle ball;
-    public static Color defaultColor = Color.KHAKI;
+    public static Color defaultColor = Color.YELLOW;
     public ColorPicker ballColorPicker;
 
     
@@ -35,7 +35,7 @@ public class Ball extends Body{
         ballColorPicker = new ColorPicker(defaultColor);
         ballColorPicker.setOnAction(event -> setBallColor(ballColorPicker.getValue()));
         ball = new Circle(radius, defaultColor);
-        ball.setStroke(defaultColor);
+        ball.setStroke(Color.BLACK);
         ball.relocate(positionX,positionY); 
     }
     
