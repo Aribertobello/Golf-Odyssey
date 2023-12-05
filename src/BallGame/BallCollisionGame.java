@@ -84,9 +84,10 @@ public class BallCollisionGame extends Application{
             stage.setScene(MainMenuScene(stage));
         });
         Button freePlay = new Button("Free Play");
+        freePlay.setStyle("-fx-border-width: 2px; -fx-border-color: black;");
         freePlay.setOnAction(event->
         {
-            Game game = new Game(freplayLevel());
+            Game game = new Game(freePlayLevel());
             game.displayPhysics = true;
             game.runGame();
         });
@@ -97,10 +98,14 @@ public class BallCollisionGame extends Application{
         topRightBox.setAlignment(Pos.TOP_RIGHT);
         topRightBox.setPadding(new Insets(20));
         
+        HBox bottomLeftBox = new HBox(freePlay);
+        bottomLeftBox.setAlignment(Pos.BOTTOM_LEFT);
+        bottomLeftBox.setPadding(new Insets(20));
+        
         BorderPane levelSelectorPane = new BorderPane();
         levelSelectorPane.setTop(topRightBox);
         levelSelectorPane.setCenter(levelBox);
-        levelSelectorPane.setBottom(freePlay);
+        levelSelectorPane.setBottom(bottomLeftBox);
     
     for (int i = 0, n = 0; i < levelsProperties.size();) {
         HBox levelRow = new HBox(20);
@@ -125,7 +130,7 @@ public class BallCollisionGame extends Application{
     
     
     
-    Level freplayLevel(){
+    Level freePlayLevel(){
         return new Level("FreePlay","",9999999,99999,
                 new Ball(10.0, 5.0, 250.0 ,250.0),
                 new Wall(0.0, 0.0, 0.0, 0.0, false),
