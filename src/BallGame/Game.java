@@ -297,13 +297,18 @@ public class Game {
     private MenuBar menuBar() {
         MenuBar menuBar = new MenuBar();
         Menu fileMenu = new Menu("Exit");
-        MenuItem exitItem = new MenuItem("Back To Main Menu");
-        MenuItem ballColorChange = new MenuItem("Colors");
-        fileMenu.getItems().addAll(ballColorChange,exitItem);
+        MenuItem mainMenuItem = new MenuItem("Back To Main Menu");
+        MenuItem levelSelectorMenuItem = new MenuItem("Back To Level Selector Menu");
+        MenuItem ballColorChange = new MenuItem("Change Ball Colour");
+        fileMenu.getItems().addAll(mainMenuItem,levelSelectorMenuItem,ballColorChange);
         menuBar.getMenus().addAll(fileMenu);
       
-        exitItem.setOnAction(event -> {
+        mainMenuItem.setOnAction(event -> {
         gameStage.close();
+        });
+        
+        levelSelectorMenuItem.setOnAction(event -> {
+        
         });
         
         VBox colorsBox = new VBox();
@@ -325,6 +330,8 @@ public class Game {
                level.ball.setBallColor(Ball.defaultColor); // Apply the shared color to the ball      
             });
 
+            
+            
             Scene colorSelectionScene = new Scene(colorSelectionLayout, 200, 200);
             colorSelectionStage.setTitle("Select Ball Color");
             colorSelectionStage.setScene(colorSelectionScene);
@@ -410,4 +417,5 @@ public class Game {
     }
 
 }
+
 
