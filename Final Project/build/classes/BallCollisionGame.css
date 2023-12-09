@@ -1,0 +1,51 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : Dec 8, 2023, 7:56:28 PM
+    Author     : aribe
+*/
+.root {
+    -fx-background-color: #1f1f1f; /* Dark background color */
+}
+
+.label {
+    -fx-text-fill: #ffffff; /* White text color */
+}
+
+.button {
+    -fx-background-color: #4CAF50; /* Green button color */
+    -fx-text-fill: #ffffff; /* White text color */
+    -fx-font-size: 16px;
+}
+
+.button:hover {
+    -fx-background-color: #45a049; /* Dark green button color on hover */
+}
+
+.border-pane {
+    -fx-background-color: #1f1f1f; /* Dark background color for the border pane */
+}
+
+.h-box, .v-box {
+    -fx-spacing: 20; /* Spacing between child nodes */
+}
+
+.level-button {
+    -fx-background-color: #3498db; /* Blue level button color */
+    -fx-text-fill: #ffffff; /* White text color */
+    -fx-font-size: 14px;
+}
+
+.level-button:hover {
+    -fx-background-color: #2980b9; /* Dark blue level button color on hover */
+}
+.menu-bar {
+    -fx-background-color: #1f1f1f;
+    -fx-border-color: #ffffff;
+}
+.menu-item {
+    -fx-background-color: #1f1f1f;
+    -fx-border-color: #ffffff;
+}

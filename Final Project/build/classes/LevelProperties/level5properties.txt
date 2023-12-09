@@ -1,0 +1,26 @@
+Level 5
+index 5 
+Final Level
+Probably the hardest One
+The finish Line Is so small 
+Maybe theres a trick to it?
+Maybe one must ride the walls?
+Reach The Green Finish Line
+
+time Limit 100
+attempts 2 
+
+ball 1.0 10.0 300.0 500.0
+
+finish line 280.0 150.0 320.0 150.0
+wall 30.0 300.0 280.0 300.0 0
+wall 320.0 300.0 570.0 300.0 0
+wall 30.0 300.0 30.0 50.0 0
+wall 570.0 300.0 570.0 500.0 0
+wall 60.0 350.0 280.0 500.0 0
+wall 320.0 500.0 540.0 350.0 0
+wall 200.0 100.0 400.0 100.0 1
+wall 200.0 100.0 200.0 200.0 1
+wall 200.0 200.0 400.0 200.0 1
+wall 400.0 100.0 400.0 200.0 1
+wall 300.0 485.0 300.0 145.0 0
